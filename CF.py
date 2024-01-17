@@ -5,7 +5,7 @@ from scipy.sparse import csr_matrix
 from sklearn.metrics.pairwise import cosine_similarity
 
 # 定义协同过滤类
-class CollaborativeFiltering:
+class CollaborativeFiltering(object):
     def __init__(self, ratings_data):
         # 初始化类的属性
         self.user_item_matrix = None
@@ -134,19 +134,34 @@ def print_recommendations(recommendations, title):
             print(f"Item {item_id}: Score {round(rating, 2)}")
 
 if __name__ == "__main__":
+    random_seed = 0
+    n_users = 100
+    n_items = 10000
+    n_ratings = 20000
+    num_recommendations = 10
+
     # 生成评分矩阵
-    rating_matrix = generate_ratings_data()
+    rating_matrix = generate_ratings_data(
+        n_users=n_users, 
+        n_items=n_items, 
+        n_ratings=n_ratings, 
+        random_seed=random_seed)
 
     # 创建类的实例
     cf = CollaborativeFiltering(rating_matrix)
 
     # 生成并打印用户推荐
-    user_recommendations = cf.user_based_recommendation(np.random.choice(list(cf.user_index_dict.keys())), num_recommendations=5)
+    user_recommendations = cf.user_based_recommendation(
+        np.random.choice(list(cf.user_index_dict.keys())), 
+        num_recommendations=num_recommendations)
     print_recommendations(user_recommendations, "基于用户的协同过滤推荐:")
 
     target_user_id = np.random.choice(list(cf.user_index_dict.keys()))
     target_item_id = np.random.choice(list(cf.item_index_dict.keys()))
 
     # 生成并打印商品推荐
-    item_recommendations = cf.item_based_recommendation(target_user_id, target_item_id, num_recommendations=5)
+    item_recommendations = cf.item_based_recommendation(
+        target_user_id, 
+        target_item_id, 
+        num_recommendations=num_recommendations)
     print_recommendations(item_recommendations, "基于物品的协同过滤推荐:")
